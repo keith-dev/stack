@@ -44,10 +44,15 @@ private:
 	node* head;
 };
 
+void worker(stack<int>& s)
+{
+	s.push(0);
+}
+
 int main()
 {
 	stack<int> s;
-	s.push(0);
+	worker(s);
 	std::cout << s.size() << std::endl;
 	return 0;
 }
