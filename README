@@ -1,0 +1,10 @@
+This code can run sequentially in a single thread, cocurrently using a mutex, or wait free/lock free.
+
+To run sequentially:
+	c++ -std=c++11 -pthread -DSEQUENTIAL=1 main.cc -o prog && time ./prog
+
+To run concurrently:
+	c++ -std=c++11 -pthread -DLOCK=1 main.cc -o prog && time ./prog
+
+To run lock free:
+	c++ -std=c++11 -pthread -DLOCK_FREE=1 main.cc -o prog && time ./prog
