@@ -3,23 +3,24 @@
 #include <vector>
 #include <iostream>
 
-typedef stack<int> stack_t;
+typedef sstack<int> sstack_t;
 
-void worker(stack_t& s, size_t n)
+void worker(sstack_t& s, size_t nitems)
 {
-	for (size_t i = 0; i != n; ++i)
+	for (size_t i = 0; i != nitems; ++i)
 		s.push(i);
 }
 
-void work(stack_t& s, size_t n)
+void work(sstack_t& s, size_t nitems, size_t nthreads)
 {
-	std::vector<std::thread> w;
 #ifdef SEQUENTIAL
-	for (size_t i = 0; i != 1000; ++i)
-		worker(s, n);
+	for (size_t i = 0; i != nthreads; ++i)
+		worker(s, nitems);
 #else
-	for (size_t i = 0; i != 1000; ++i)
-		w.emplace_back(worker, std::ref(s), n);
+	std::vector<std::thread> w;
+	w.reserve(nthreads);
+	for (size_t i = 0; i != nthreads; ++i)
+		w.emplace_back(worker, std::ref(s), nitems);
 	for (size_t i = 0; i != w.size(); ++i)
 		w[i].join();
 #endif
@@ -27,9 +28,9 @@ void work(stack_t& s, size_t n)
 
 int main(int argc, char* argv[])
 {
-	size_t n = argc > 1 ? atoi(argv[1]) : 100*1000;
-	stack_t s;
-	work(s, n);
+	size_t nitems   = argc > 1 ? atoi(argv[1]) : 500*1000;
+	size_t nthreads = argc > 2 ? atoi(argv[2]) : 5*100;
+	sstack_t s;
+	work(s, nitems, nthreads);
 	std::cout << s.size() << std::endl;
-	return 0;
 }
